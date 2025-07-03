@@ -572,21 +572,7 @@ def serve_static(path):
     return send_from_directory('static', path)
 
 def create_app():
-    # This function is used by Gunicorn
-    return app
-
-@app.route('/get-api-key')
-def get_api_key():
-    """Endpoint to get the API key for the frontend"""
-    # In a production environment, you might want to implement additional security measures here
-    # such as rate limiting, IP whitelisting, or using short-lived tokens
-    return jsonify({
-        'apiKey': os.getenv('OPENROUTER_API_KEY')
-    })
-
-# Gemini API configuration is now at the top of the file
-
-def create_app():
+    # This function is used by Gunicorn/Railway
     # Ensure the static and templates folders exist
     os.makedirs('static', exist_ok=True)
     os.makedirs('templates', exist_ok=True)
@@ -601,15 +587,21 @@ def create_app():
     
     # Set port and check if running in production
     port = int(os.environ.get('PORT', 10000))
-    is_production = os.environ.get('RENDER', '').lower() == 'true'
     
-    if not is_production:
-        # Debug information only in development
-        app.config['DEBUG'] = True
-        logger.info("Running in development mode")
-    else:
+    # Configure for Railway
+    if os.environ.get('RAILWAY_ENVIRONMENT'):
+        logger.info("Running in Railway production environment")
         app.config['DEBUG'] = False
-        logger.info("Running in production mode")
+    else:
+        logger.info("Running in development mode")
+        app.config['DEBUG'] = True
+        
+        # Debug information only in development
+        logger.info("\n=== Debug Information ===")
+        logger.info(f"Environment: {os.environ.get('FLASK_ENV', 'development')}")
+        logger.info(f"Gemini API Key: {'Set' if os.environ.get('GEMINI_API_KEY') else 'Not Set'}")
+    
+    return app
     
     logger.info("\n=== Application Starting ===\n")
     
