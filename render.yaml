@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: disease-prediction-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-tmp-dir /dev/shm --timeout 120 --workers 4 --threads 8 --worker-class gthread app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
+      - key: GEMINI_API_KEY
+        description: "Gemini API key for chat functionality"
+      - key: FLASK_APP
+        value: "app.py"
+      - key: FLASK_ENV
+        value: "production"
+      - key: PORT
+        value: 10000
+    plan: free
+    numInstances: 1
+    healthCheckPath: /
+    autoDeploy: true

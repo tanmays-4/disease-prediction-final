@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assistant Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="parallax-bg" class="parallax-element"></div>
+    <div class="container scroll-reveal">
+        <header class="glass glow-hover float">
+            <h1 class="scroll-reveal text-glow">💬 Health Assistant</h1>
+            <a href="{{ url_for('home') }}" class="back-btn glow-hover">← Back to Home</a>
+        </header>
+        
+        <main class="chat-container glass scroll-reveal">
+            <!-- Chat Widget -->
+            <div id="chat-widget">
+                <div id="chat-container">
+                    <div class="chat-header">
+                        <h3>Health Assistant</h3>
+                    </div>
+                    <div id="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Ask about your condition..." />
+                        <button id="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="scroll-reveal">
+            <p>&copy; 2024 Health Disease Predictor. For educational purposes only.</p>
+        </footer>
+    </div>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{{ url_for('static', filename='chat.js') }}"></script>

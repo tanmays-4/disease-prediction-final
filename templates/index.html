@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Disease Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="parallax-bg" class="parallax-element"></div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <header class="glass glow-hover float">
+                <h1 class="scroll-reveal">PULSE GUARD</h1>
+                <h2 class="motto">Predict Early, Treat Smartly</h2>
+                <p class="scroll-reveal">Empowering you with AI-driven health insights for better tomorrow</p>
+            </header>
+        </div>
+        
+       
+    </section>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            
+    </div>
+    
+    <!-- Diseases Section -->
+    <div class="diseases-wrapper">
+        <div class="container">
+            <section class="diseases-section scroll-reveal parallax-element">
+            <div class="diseases-container">
+                <h2 class="scroll-reveal">Diseases We Can Predict</h2>
+                <div class="diseases-grid">
+                    <a href="{{ url_for('diabetes') }}" class="disease-card active glass glow-hover scroll-reveal" style="text-decoration: none; color: inherit;">
+                        <div class="disease-icon float">💉</div>
+                        <h3>Diabetes</h3>
+                        <p>Type 2 diabetes risk assessment based on glucose levels, BMI, age, and family history</p>
+                        <div class="features">
+                            <span class="feature">✓ Glucose Analysis</span>
+                            <span class="feature">✓ BMI Assessment</span>
+                            <span class="feature">✓ Age Factor</span>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('heart') }}" class="disease-card active glass glow-hover scroll-reveal" style="text-decoration: none; color: inherit;">
+                        <div class="disease-icon float">❤️</div>
+                        <h3>Heart Disease</h3>
+                        <p>Cardiovascular risk evaluation using chest pain, cholesterol, and blood pressure data</p>
+                        <div class="features">
+                            <span class="feature">✓ Chest Pain Analysis</span>
+                            <span class="feature">✓ Cholesterol Check</span>
+                            <span class="feature">✓ Blood Pressure</span>
+                        </div>
+                    </a>
+                    
+                    <div class="disease-card coming-soon">
+                        <div class="disease-icon">🧠</div>
+                        <h3>Alzheimer's Disease</h3>
+                        <p>Early detection of cognitive decline and dementia risk factors</p>
+                        <div class="coming-soon-badge">Coming Soon</div>
+                    </div>
+                    
+                    <a href="{{ url_for('lung') }}" class="disease-card active glass glow-hover scroll-reveal" style="text-decoration: none; color: inherit;">
+                        <div class="disease-icon float">🫁</div>
+                        <h3>Lung Cancer</h3>
+                        <p>Respiratory health assessment and lung cancer risk evaluation</p>
+                        <div class="features">
+                            <span class="feature">✓ Age Analysis</span>
+                            <span class="feature">✓ Smoking History</span>
+                            <span class="feature">✓ Area Quality</span>
+                            <span class="feature">✓ Alcohol Consumption</span>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('stroke') }}" class="disease-card active glass glow-hover scroll-reveal" style="text-decoration: none; color: inherit;">
+                        <div class="disease-icon float">🩸</div>
+                        <h3>Stroke</h3>
+                        <p>Cerebrovascular risk assessment and stroke prevention analysis</p>
+                        <div class="features">
+                            <span class="feature">✓ Blood Pressure</span>
+                            <span class="feature">✓ Glucose Levels</span>
+                            <span class="feature">✓ Heart Disease</span>
+                        </div>
+                    </a>
+                    
+                    <div class="disease-card coming-soon">
+                        <div class="disease-icon">🦴</div>
+                        <h3>Osteoporosis</h3>
+                        <p>Bone density assessment and fracture risk evaluation</p>
+                        <div class="coming-soon-badge">Coming Soon</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+        
+        <footer class="scroll-reveal">
+            <p>&copy; 2024 Health Disease Predictor. For educational purposes only.</p>
+        </footer>
+    </div>
+    
+    <div class="motto-overlay">
+        <h2 class="motto">Predict Early, Treat Smartly</h2>
+    </div>
+    
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chat-toggle-btn">
+        <i class="fas fa-comment-medical"></i>
+    </button>
+    
+    <!-- Chat Widget -->
+    <div id="chat-widget">
+        <div id="chat-container">
+            <div id="chat-header">
+                <h3>Health Assistant</h3>
+                <button id="close-chat">&times;</button>
+            </div>
+            <div id="chat-messages">
+                <div class="chat-message bot-message">Hello! How can I help you today?</div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Type your message..." />
+                <button id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat-simple.css') }}">
+    
+    <!-- JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatToggle = document.getElementById('chat-toggle-btn');
+        const chatWidget = document.getElementById('chat-widget');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+        
+        // Toggle chat window
+        chatToggle.addEventListener('click', function() {
+            chatWidget.style.display = chatWidget.style.display === 'flex' ? 'none' : 'flex';
+            if (chatWidget.style.display === 'flex') {
+                chatInput.focus();
+            }
+        });
+        
+        // Close chat
+        closeChat.addEventListener('click', function() {
+            chatWidget.style.display = 'none';
+        });
+        
+        // Add bot message helper function
+        function addBotMessage(text) {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chat-message bot-message';
+            botMessage.textContent = text;
+            chatMessages.appendChild(botMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Send message function
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message user-message';
+            userMessage.textContent = message;
+            chatMessages.appendChild(userMessage);
+            
+            // Clear input and disable it while waiting for response
+            chatInput.value = '';
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'chat-message bot-message';
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.textContent = 'Typing...';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                console.log('Sending message to server...');
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                console.log('Response status:', response.status);
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Failed to parse JSON response:', e);
+                    throw new Error('Invalid response from server');
+                }
+                
+                
+                typingIndicator.remove();
+                
+                if (response.ok) {
+                    
+                    console.log('Bot response:', data.response);
+                    addBotMessage(data.response);
+                } else {
+                    console.error('Error from server:', data);
+                    addBotMessage(`Error: ${data.error || 'Failed to get response from server'}`);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.remove();
+                addBotMessage('Sorry, I encountered an error. Please check your connection and try again.');
+            } finally {
+                
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        }
+        
+        // Send message on button click or Enter key
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    });
+    </script>
+    
+    <!-- Main Scripts -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mottoOverlay = document.querySelector('.motto-overlay');
+            const motto = document.querySelector('.motto');
+
+            setTimeout(() => {
+                mottoOverlay.classList.add('hidden');
+                motto.classList.add('hidden');
+            }, 3000);
+        });
+
+        let isScrolling = false;
+        
+        function revealOnScroll() {
+            if (!isScrolling) {
+                requestAnimationFrame(() => {
+                    const reveals = document.querySelectorAll('.scroll-reveal:not(.revealed)');
+                    const windowHeight = window.innerHeight;
+                    
+                    reveals.forEach(element => {
+                        const elementTop = element.getBoundingClientRect().top;
+                        if (elementTop < windowHeight - 100) {
+                            element.classList.add('revealed');
+                        }
+                    });
+                    
+                    isScrolling = false;
+                });
+                isScrolling = true;
+            }
+        }
+        
+        // Simplified parallax - only for essential elements
+        let isParallaxing = false;
+        
+        function parallaxScroll() {
+            if (!isParallaxing) {
+                requestAnimationFrame(() => {
+                    const parallaxBg = document.getElementById('parallax-bg');
+                    if (parallaxBg) {
+                        const scrolled = window.pageYOffset;
+                        parallaxBg.style.transform = `translate3d(0, ${scrolled * 0.3}px, 0)`;
+                    }
+                    isParallaxing = false;
+                });
+                isParallaxing = true;
+            }
+        }
+        
+        // Optimized floating animation delays
+        function addFloatingDelays() {
+            const floatElements = document.querySelectorAll('.float');
+            floatElements.forEach((element, index) => {
+                element.style.animationDelay = `${Math.min(index * 0.3, 2)}s`;
+            });
+        }
+        
+        // Share result function
+        function shareResult() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Health Prediction Result',
+                    text: 'Check out my health prediction result from the Disease Predictor app!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+        
+        // Download report function
+        function downloadReport() {
+            alert('Download feature coming soon!');
+        }
+        
+        // Initialize animations and chat when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize animations
+            window.addEventListener('scroll', () => {
+                revealOnScroll();
+                parallaxScroll();
+            });
+            
+            // Initialize other animations
+            revealOnScroll();
+            addFloatingDelays();
+        });
+        
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

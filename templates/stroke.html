@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+    <div id="parallax-bg" class="parallax-element"></div>
+    <div class="container scroll-reveal">
+        <header class="glass glow-hover float">
+            <h1 class="scroll-reveal text-glow">🩸 Stroke Predictor</h1>
+            <p class="scroll-reveal">Enter your health information to assess stroke risk</p>
+            <a href="{{ url_for('home') }}" class="back-btn glow-hover">← Back to Home</a>
+        </header>
+        
+        <main>
+            <form class="prediction-form glass scroll-reveal" action="{{ url_for('predict_stroke') }}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="1" max="120" step="1" placeholder="Age in years" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hypertension">Hypertension</label>
+                        <select id="hypertension" name="hypertension" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="heart_disease">Heart Disease</label>
+                        <select id="heart_disease" name="heart_disease" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ever_married">Ever Married</label>
+                        <select id="ever_married" name="ever_married" required>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="work_type">Work Type</label>
+                        <select id="work_type" name="work_type" required>
+                            <option value="Private">Private</option>
+                            <option value="Self-employed">Self-employed</option>
+                            <option value="Govt_job">Govt_job</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Residence_type">Residence Type</label>
+                        <select id="Residence_type" name="Residence_type" required>
+                            <option value="Urban">Urban</option>
+                            <option value="Rural">Rural</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="avg_glucose_level">Average Glucose Level</label>
+                        <input type="number" id="avg_glucose_level" name="avg_glucose_level" min="50" max="300" step="0.1" placeholder="Glucose level (mg/dL)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bmi">BMI</label>
+                        <input type="number" id="bmi" name="bmi" min="10" max="100" step="0.1" placeholder="Body Mass Index" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="smoking_status">Smoking Status</label>
+                        <select id="smoking_status" name="smoking_status" required>
+                            <option value="formerly smoked">Formerly smoked</option>
+                            <option value="never smoked">Never smoked</option>
+                            <option value="smokes">Smokes</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-actions scroll-reveal">
+                    <button type="submit" class="predict-btn glow-hover">Predict Stroke Risk</button>
+                    <button type="reset" class="reset-btn glow-hover">Clear Form</button>
+                </div>
+            </form>
+            
+            {% if result %}
+            <div class="result-section">
+                <div class="result-container animated">
+                    <div class="result-icon">
+                        {% if 'High Risk' in result %}
+                            <span class="icon-warning">⚠️</span>
+                        {% else %}
+                            <span class="icon-success">✅</span>
+                        {% endif %}
+                    </div>
+                    <div class="result-content">
+                        <h3>Prediction Result</h3>
+                        <p class="result-text">{{ result }}</p>
+                        <div class="result-actions">
+                            <button type="button" onclick="shareResult()" class="share-btn">Share Result</button>
+                            <button type="button" onclick="downloadReport()" class="download-btn">Download Report</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> This prediction is for educational purposes only and should not replace professional medical advice. Please consult with a healthcare provider for accurate diagnosis and treatment.</p>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+        
+        <footer class="scroll-reveal">
+            <p>&copy; 2024 Health Disease Predictor. For educational purposes only.</p>
+        </footer>
+    </div>
+    
+    <script>
+
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('revealed');
+                }
+            });
+        }
+        
+
+        function parallaxScroll() {
+            const parallaxElements = document.querySelectorAll('.parallax-element');
+            const scrolled = window.pageYOffset;
+            
+            parallaxElements.forEach(element => {
+                const rate = scrolled * -0.5;
+                element.style.transform = `translateY(${rate}px)`;
+            });
+        }
+        
+
+        function initFormAnimations() {
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.animationDelay = `${index * 0.1}s`;
+                group.classList.add('scroll-reveal');
+            });
+            
+
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                    this.parentElement.style.transition = 'transform 0.3s ease';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        }
+        
+
+        function shareResult() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Stroke Prediction Result',
+                    text: 'Check out my stroke prediction result!',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+        
+
+        function downloadReport() {
+            // Create a simple text report
+            const result = document.querySelector('.result-text')?.textContent || 'No result available';
+            const reportContent = `Stroke Prediction Report\n\nResult: ${result}\n\nGenerated on: ${new Date().toLocaleDateString()}\n\nDisclaimer: This prediction is for educational purposes only.`;
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'stroke-prediction-report.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+
+        window.addEventListener('scroll', () => {
+            revealOnScroll();
+            parallaxScroll();
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            revealOnScroll();
+            initFormAnimations();
+        });
+    </script>
+</body>
+</html>
+

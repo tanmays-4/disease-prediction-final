@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+    <div id="parallax-bg" class="parallax-element"></div>
+    <div class="container scroll-reveal">
+        <header class="glass glow-hover float">
+            <h1 class="scroll-reveal text-glow">❤️ Heart Disease Predictor</h1>
+            <a href="{{ url_for('home') }}" class="back-btn glow-hover">← Back to Home</a>
+        </header>
+        
+        <main class="prediction-container">
+            <div class="prediction-form glass glow-hover scroll-reveal">
+                <h2 class="scroll-reveal text-glow">Heart Disease Risk Assessment</h2>
+                <p class="scroll-reveal">Fill in your health details to assess your heart disease risk.</p>
+                
+                {% if show_result %}
+                <div class="result-box {% if result == 'Positive' %}negative{% else %}positive{% endif %} scroll-reveal">
+                    <h3>Prediction Result: <span>{{ result }}</span></h3>
+                    <p>Confidence: {{ confidence }}</p>
+                    <p class="disclaimer">This is a prediction based on the provided data and should not be considered a medical diagnosis.</p>
+                </div>
+                {% endif %}
+                
+                <form id="heartForm" action="{{ url_for('predict_heart') }}" method="POST" class="scroll-reveal">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="age">Age (years)</label>
+                            <input type="number" id="age" name="age" min="20" max="100" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <div class="radio-group">
+                                <input type="radio" id="male" name="sex" value="male" required>
+                                <label for="male">Male</label>
+                                <input type="radio" id="female" name="sex" value="female">
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Chest Pain Type -->
+                        <div class="form-group">
+                            <label for="cp">Chest Pain Type</label>
+                            <select id="cp" name="cp" required>
+                                <option value="0">Typical Angina</option>
+                                <option value="1">Atypical Angina</option>
+                                <option value="2">Non-anginal Pain</option>
+                                <option value="3">Asymptomatic</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Vital Signs -->
+                        <div class="form-group">
+                            <label for="trestbps">Resting Blood Pressure (mm Hg)</label>
+                            <input type="number" id="trestbps" name="trestbps" min="90" max="200" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="chol">Cholesterol (mg/dl)</label>
+                            <input type="number" id="chol" name="chol" min="100" max="600" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fbs">Fasting Blood Sugar > 120 mg/dl</label>
+                            <select id="fbs" name="fbs" required>
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                        
+                        <!-- ECG Results -->
+                        <div class="form-group">
+                            <label for="restecg">Resting ECG Results</label>
+                            <select id="restecg" name="restecg" required>
+                                <option value="0">Normal</option>
+                                <option value="1">ST-T Wave Abnormality</option>
+                                <option value="2">Left Ventricular Hypertrophy</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Exercise Related -->
+                        <div class="form-group">
+                            <label for="thalach">Maximum Heart Rate Achieved</label>
+                            <input type="number" id="thalach" name="thalach" min="70" max="220" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="exang">Exercise Induced Angina</label>
+                            <select id="exang" name="exang" required>
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="oldpeak">ST Depression (Exercise)</label>
+                            <input type="number" id="oldpeak" name="oldpeak" step="0.1" min="0" max="10" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="slope">Slope of Peak Exercise ST Segment</label>
+                            <select id="slope" name="slope" required>
+                                <option value="0">Upsloping</option>
+                                <option value="1">Flat</option>
+                                <option value="2">Downsloping</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Additional Parameters -->
+                        <div class="form-group">
+                            <label for="ca">Number of Major Vessels (0-3)</label>
+                            <input type="number" id="ca" name="ca" min="0" max="3" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="thal">Thalassemia</label>
+                            <select id="thal" name="thal" required>
+                                <option value="1">Normal</option>
+                                <option value="2">Fixed Defect</option>
+                                <option value="3">Reversible Defect</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="cta-btn glow-hover">Predict Heart Disease Risk</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        
+        <footer class="scroll-reveal">
+            <p>&copy; 2024 Health Disease Predictor. For educational purposes only.</p>
+        </footer>
+    </div>
+    
+    <script>
+
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('revealed');
+                }
+            });
+        }
+        
+
+        function parallaxScroll() {
+            const parallaxElements = document.querySelectorAll('.parallax-element');
+            const scrolled = window.pageYOffset;
+            
+            parallaxElements.forEach(element => {
+                const rate = scrolled * -0.5;
+                element.style.transform = `translateY(${rate}px)`;
+            });
+        }
+        
+
+        function initListAnimations() {
+            const listItems = document.querySelectorAll('li.scroll-reveal');
+            listItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+        
+
+        function addFloatingDelays() {
+            const floatElements = document.querySelectorAll('.float');
+            floatElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.5}s`;
+            });
+        }
+        
+
+        window.addEventListener('scroll', () => {
+            revealOnScroll();
+            parallaxScroll();
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            revealOnScroll();
+            initListAnimations();
+            addFloatingDelays();
+        });
+    </script>
+</body>
+</html>
