@@ -1,4 +1,4 @@
-# 🧠 Disease Prediction Website
+# 🧠 Pulse Guard
 
 A web application that predicts the likelihood of major health conditions — **Diabetes, Heart Disease, Lung Cancer, and Stroke** — using trained machine learning models on health-related input data. Designed to provide early warning and awareness to users, potentially saving lives.
 
