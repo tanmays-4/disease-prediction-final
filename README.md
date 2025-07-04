@@ -5,7 +5,7 @@ A web application that predicts the likelihood of major health conditions — **
 ---
 
 ## 🚀 Live Demo
-🌐 [Click here to try the website]((https://web-production-2e7c.up.railway.app/))
+🌐 [Click here to try the website](https://web-production-2e7c.up.railway.app/)
 
 ---
 
